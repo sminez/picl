@@ -2,38 +2,50 @@
 //! This is the main Read-Eval-Print-Loop for the PICL interpretor.
 //! For the interpretor class itself see intrepretor.rs
 
-use std::io::{self, Write};
+extern crate rustyline;
 
-
-/// Read a string from input.
-pub fn read() -> String {
-    print!("\nλ > ");
-    io::stdout().flush().unwrap();
-
-    // Read the user input
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).expect(
-        "Failed to read from stdIn",
-    );
-    return input
-}
-
+use self::rustyline::Editor;
+use self::rustyline::error::ReadlineError;
 
 /// Evaluate a string.
-pub fn eval(string: String) -> String {
-    return string
+fn eval(string: String) -> String {
+    return string;
 }
-
 
 /// Print a result after interpretation.
 pub fn print(string: String) {
-    print!("{}", string)
+    println!("... {}\n", string)
 }
 
-
 /// Run the repl
-pub fn repl() -> Result<(), &'static str> {
+pub fn repl() {
+    let mut rl = Editor::<()>::new();
+    // Don't worry if there is no history file yet
+    if let Err(_) = rl.load_history("/tmp/picl-history.txt") {}
+
+    // READ loop
     loop {
-        print(eval(read()))
+        let readline = rl.readline("λ > ");
+        match readline {
+            Ok(line) => {
+                rl.add_history_entry(&line);
+                print(eval(line));
+            }
+
+            Err(ReadlineError::Interrupted) => {
+                break; // CTRL-C
+            }
+
+            Err(ReadlineError::Eof) => {
+                break; // CTRL-D
+            }
+
+            // Some other readline error so report it and bail.
+            Err(err) => {
+                println!("Error: {:?}", err);
+                break;
+            }
+        }
     }
+    rl.save_history("/tmp/picl-history.txt").unwrap();
 }
