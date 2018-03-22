@@ -1,7 +1,8 @@
 extern crate picl;
 
-use picl::repl;
+use picl::repl::Repl;
 
 fn main() {
-    repl::repl()
+    let repl = Repl::new();
+    repl.repl()
 }

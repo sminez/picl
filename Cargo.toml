@@ -17,9 +17,10 @@ name = "picl"
 path = "src/bin/main.rs"
 
 [dependencies]
-# lazy_static = "0.2"
-# getopts = "0.2"
+regex = "0.2"
+lazy_static = "0.2"
 rustyline = "1.0.0"
+# getopts = "0.2"
 
 [dev-dependencies]
 # proptest = "0.3.1"

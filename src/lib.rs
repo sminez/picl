@@ -1,4 +1,12 @@
 //! PICL a LISP written in Rust
+//! It follows and extends the edn format defined by Clojure but it is not
+//! Clojure in Rust.
+
+#[macro_use]
+extern crate lazy_static;
+
+#[macro_use]
+pub mod utils;
 
 // Internal modules
 pub mod builtins;
