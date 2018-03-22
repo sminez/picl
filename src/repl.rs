@@ -25,7 +25,7 @@ impl Repl {
     }
 
     /// Print a result after interpretation.
-    pub fn print(&self, string: String) {
+    pub fn print(&mut self, string: String) {
         println!("... {}\n", string)
     }
 
@@ -33,7 +33,7 @@ impl Repl {
     /// At the moment there isn't much functionality being used from
     /// rustyline but there is a lot to check out:
     /// https://github.com/kkawakam/rustyline/blob/master/examples/example.rs
-    pub fn repl(&self) {
+    pub fn repl(&mut self) {
         let mut rl = Editor::<()>::new();
         // Don't worry if there is no history file yet
         if let Err(_) = rl.load_history("/tmp/picl-history.txt") {}
@@ -44,7 +44,9 @@ impl Repl {
             match readline {
                 Ok(line) => {
                     rl.add_history_entry(&line);
-                    self.print(self.evaluator.eval(self.reader.read(line)));
+                    let forms = self.reader.read(line);
+                    let value = self.evaluator.eval(forms);
+                    self.print(value);
                 }
 
                 Err(ReadlineError::Interrupted) => {
